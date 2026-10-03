@@ -30,8 +30,9 @@ jobs:
               /var/lib/docker/volumes/arcane_arcane-data/_data/projects/optimasi-wa/
 
             echo "==> Build dan restart container"
-            cd /var/lib/docker/volumes/arcane_arcane-data/_data/projects/optimasi-wa
-            sudo docker compose up -d --build
+            sudo docker compose \
+              -f /var/lib/docker/volumes/arcane_arcane-data/_data/projects/optimasi-wa/compose.yaml \
+              up -d --build
 
             echo "==> Status container"
             sudo docker ps --filter name=optimasi-wa
