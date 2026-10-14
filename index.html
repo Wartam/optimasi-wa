@@ -338,17 +338,13 @@ function enterApp(){
 }
 
 function logout(){
-  USER_ROLE = '';
+  USER_ROLE = 'user';
   sessionStorage.removeItem(CODE_KEY);
   sessionStorage.removeItem(ROLE_KEY);
   sessionStorage.removeItem('hwa_group_ok');
   ALL_ROWS = []; SHEET_LOADED = false; // bersihkan data dari memori
-  $('appBody').style.display = 'none';
-  $('loginScreen').style.display = '';
-  $('loginCode').value = '';
-  $('loginErr').innerHTML = '';
-  document.body.classList.remove('is-admin');
-  setTimeout(()=>{ const inp = $('loginCode'); if(inp) inp.focus(); }, 60);
+  enterApp();
+  toast('👋 Keluar dari mode admin');
 }
 
 async function doLogin(code){
@@ -1099,20 +1095,11 @@ fileInp.addEventListener('change', e=>handleFile(e.target.files[0]));
 ['dragleave','drop'].forEach(ev=>drop.addEventListener(ev, e=>{e.preventDefault(); drop.classList.remove('over');}));
 drop.addEventListener('drop', e=>handleFile(e.dataTransfer.files[0]));
 
-/* Saat dibuka: terapkan tema, lalu pulihkan sesi login bila ada */
+/* Saat dibuka: langsung masuk sebagai pengguna biasa tanpa kode masuk. */
 applyTheme();
 (function(){
-  try{
-    const c = sessionStorage.getItem(CODE_KEY);
-    if(c && WEB_APP_URL){
-      apiPost({action:'login', code: c}).then(d=>{
-        if(d && d.ok){ USER_ROLE = d.role; enterApp(); }
-        else { const i=$('loginCode'); if(i) i.focus(); }
-      }).catch(()=>{});
-    }else{
-      const i=$('loginCode'); if(i) setTimeout(()=>i.focus(), 120);
-    }
-  }catch(e){ /* abaikan, tetap di layar login */ }
+  USER_ROLE = 'user';
+  enterApp();
 })();
 </script>
 </body>
